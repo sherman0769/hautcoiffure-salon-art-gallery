@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HautCoiffure | 高奢先鋒沙龍線上藝術館</title>
+    
+    <!-- SEO Optimization -->
+    <meta name="description" content="HautCoiffure 是一座將美髮剪裁與染護視為流動雕塑的線上藝術館。展出由 AI 生成的東亞高端沙龍髮藝，並提供 200+ 款日韓台精選髮型 Lookbook 靈感庫，伴以沉浸式背景音樂沙龍。" />
+    <meta name="keywords" content="美髮藝術, 線上展覽, 髮型 Lookbook, 東亞美學, 日韓髮型, 髮藝雕塑, Suno 背景音樂" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="application-name" content="HautCoiffure" />
+    <meta name="apple-mobile-web-app-title" content="HautCoiffure" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="HautCoiffure" />
+    <meta property="og:title" content="HautCoiffure | 高奢先鋒沙龍線上藝術館" />
+    <meta property="og:description" content="沉浸式沙龍藝術館，探索東亞髮藝雕塑、流光染護與 207 幅 AI 靈感 Lookbook。" />
+    <meta property="og:image" content="/share-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HautCoiffure | 高奢先鋒沙龍線上藝術館" />
+    <meta name="twitter:description" content="沉浸式沙龍藝術館，探索東亞髮藝雕塑、流光染護與 207 幅 AI 靈感 Lookbook。" />
+    <meta name="twitter:image" content="/share-card.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    
+    <!-- Google Fonts for Luxury Fashion Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Inline styles for the loader to render instantly -->
+    <style>
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #050505;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .loader-logo {
+        font-family: 'Cinzel', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        color: #d4af37;
+        letter-spacing: 0.6rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        animation: logo-fade 2s ease-in-out infinite alternate;
+      }
+      .loader-bar {
+        width: 200px;
+        height: 1px;
+        background-color: rgba(212, 175, 55, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+      .loader-bar::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 100%;
+        background-color: #d4af37;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: load 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+      @keyframes logo-fade {
+        from { opacity: 0.3; text-shadow: 0 0 10px rgba(212,175,55,0.05); transform: scale(0.98); }
+        to { opacity: 1; text-shadow: 0 0 25px rgba(212,175,55,0.45); transform: scale(1.02); }
+      }
+      @keyframes load {
+        to { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preloader Screen -->
+    <div id="preloader">
+      <div class="loader-logo">HAUTCOIFFURE</div>
+      <div class="loader-bar"></div>
+    </div>
+
+    <!-- Custom Luxury Liquid Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="custom-cursor-dot" id="customCursorDot"></div>
+
+    <!-- Fluid Ambient Background Glow & Floating Blobs -->
+    <div class="ambient-glow" id="ambientGlow">
+      <div class="glow-blob glow-blob-1"></div>
+      <div class="glow-blob glow-blob-2"></div>
+      <div class="glow-blob glow-blob-3"></div>
+    </div>
+
+    <!-- Luxury Header / Navbar -->
+    <header class="gallery-header">
+      <div class="header-logo hover-target">
+        <span class="logo-main">HAUTCOIFFURE</span>
+        <span class="logo-sub">ONLINE ART GALLERY</span>
+      </div>
+      <nav class="gallery-nav">
+        <a href="#entrance" class="nav-link active hover-target">序幕</a>
+        <a href="#exhibition" class="nav-link hover-target">藝術展廳</a>
+        <a href="#lookbook" class="nav-link hover-target">靈感庫 (200+)</a>
+        <a href="#about" class="nav-link hover-target">策展理念</a>
+      </nav>
+      <div class="header-actions">
+        <button class="nav-share-toggle hover-target" id="headerShareBtn" type="button" title="分享展館" aria-label="分享展館連結">
+          <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+            <path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.39l7.05-4.13A2.98 2.98 0 1 0 15 5c0 .23.03.45.08.66L8.03 9.79a3 3 0 1 0 0 4.42l7.11 4.17c-.04.18-.06.38-.06.57a2.92 2.92 0 1 0 2.92-2.85z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="nav-music-toggle hover-target" id="headerMusicToggle" type="button" title="控制背景音樂" aria-label="控制背景音樂">
+          <span class="music-icon-bar"></span>
+          <span class="music-icon-bar"></span>
+          <span class="music-icon-bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main id="app">
+      
+      <!-- Section 1: The Entrance (序幕 - 視差大圖背景) -->
+      <section id="entrance" class="entrance-section">
+        <!-- Parallax Visual Image -->
+        <div class="entrance-bg-parallax" id="entranceBg"></div>
+        <div class="entrance-bg-overlay"></div>
+        
+        <div class="entrance-content">
+          <span class="entrance-tag">HAUTE COUTURE CONCEPT</span>
+          <h1 class="entrance-title">髮絲是靈魂的畫布</h1>
+          <p class="entrance-subtitle">Hair is the dynamic sculpture of the human soul</p>
+          <div class="entrance-divider"></div>
+          <p class="entrance-description">
+            歡迎來到 <strong>HautCoiffure 高奢髮藝展館</strong>。在這裡，我們跨越傳統沙龍的界限，
+            將每一次剪裁、每一道染色，提煉為立體雕塑與光譜藝術。結合 AI 生成的東亞精緻面容，
+            與 200 款原創靈感之作，邀請您進入這場感官交織的時尚沙龍。
+          </p>
+          <a href="#exhibition" class="enter-btn hover-target" id="enterGalleryBtn">
+            <span>展開漫步展廳</span>
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="scroll-hint hover-target">
+          <span>向下滾動以探索</span>
+          <div class="scroll-hint-line"></div>
+        </div>
+      </section>
+
+      <!-- Section 2: Horizontal Exhibition Gallery (藝術展廳 - 12 幅東亞 AI 簽名巨作) -->
+      <section id="exhibition" class="exhibition-section">
+        <div class="section-title-wrap">
+          <span class="section-num">01</span>
+          <h2 class="section-title">THE MASTERPIECES</h2>
+          <p class="section-subtitle">AI 原創藝術展廳・實體畫廊畫框設計</p>
+        </div>
+        
+        <!-- Horizontal Scroll Container -->
+        <div class="exhibition-scroll-wrapper" id="exhibitionScrollWrapper">
+          <div class="exhibition-track" id="exhibitionTrack">
+            
+            <!-- Room 1: Sculptural Silhouette -->
+            <div class="exhibit-room-intro" data-theme="sculptural">
+              <div class="room-intro-inner">
+                <span class="room-tag">ROOM I</span>
+                <h3>雕塑輪廓</h3>
+                <p class="room-en">Sculptural Silhouette</p>
+                <div class="room-desc">
+                  以俐落、幾何且富有張力的剪裁，重塑東亞面部輪廓。
+                  髮絲化身為黑白純粹的立體雕塑，彰顯先鋒前衛美感。
+                </div>
+              </div>
+            </div>
+            
+            <div class="exhibit-card hover-target" data-room="1">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/sculptural_1.png" alt="幾何界限" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>幾何界限</h4>
+                <p class="exhibit-desc">極簡鮑伯的偏分幾何折角，與溫潤的面部曲線形成強烈視覺張力。</p>
+                <span class="exhibit-region">韓國 (Korea)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="1">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/sculptural_2.png" alt="藤蔓交織" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>藤蔓交織</h4>
+                <p class="exhibit-desc">手工編織呈現雕塑結構，勾勒出日本古典宮廷與現代街頭的重疊魅影。</p>
+                <span class="exhibit-region">日本 (Japan)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="1">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/sculptural_3.png" alt="線條律動" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>線條律動</h4>
+                <p class="exhibit-desc">不規則的切邊碎短髮，賦予髮絲無與倫比的羽毛感與中性魅力。</p>
+                <span class="exhibit-region">台灣 (Taiwan)</span>
+              </div>
+            </div>
+
+            <!-- Room 2: Chroma Spectrum -->
+            <div class="exhibit-room-intro" data-theme="chroma">
+              <div class="room-intro-inner">
+                <span class="room-tag">ROOM II</span>
+                <h3>流光光譜</h3>
+                <p class="room-en">Chroma Spectrum</p>
+                <div class="room-desc">
+                  光與色彩的無縫融匯。極光漸層染、霓虹挑染在髮絲間傾瀉，
+                  讓髮色在不同光影下呈現迷幻奢華的色彩律動。
+                </div>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="2">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/chroma_1.png" alt="極光微瀾" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>極光微瀾</h4>
+                <p class="exhibit-desc">粉藍與香檳紫交織出如北極光般的柔霧漸層，在長髮間流動閃爍。</p>
+                <span class="exhibit-region">韓國 (Korea)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="2">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/chroma_2.png" alt="螢光耳圈" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>螢光耳圈</h4>
+                <p class="exhibit-desc">蜜桃橘與青檸綠在高飽和燈光下躍動，凸顯獨一一無二的時尚個性。</p>
+                <span class="exhibit-region">日本 (Japan)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="2">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/chroma_3.png" alt="太空銀月" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>太空銀月</h4>
+                <p class="exhibit-desc">極致冷銀灰色夾雜夢幻丁香紫挑染，展現如雕像般的冷冽高級感。</p>
+                <span class="exhibit-region">台灣 (Taiwan)</span>
+              </div>
+            </div>
+
+            <!-- Room 3: Organic Whisper -->
+            <div class="exhibit-room-intro" data-theme="organic">
+              <div class="room-intro-inner">
+                <span class="room-tag">ROOM III</span>
+                <h3>大地呢喃</h3>
+                <p class="room-en">Organic Whisper</p>
+                <div class="room-desc">
+                  回歸自然，聆聽植物、花草與髮絲的悄悄話。
+                  慵懶大波浪與粗獷編髮交融，傳遞神祕純粹的大地哲學。
+                </div>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="3">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/organic_1.png" alt="繁花序曲" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>繁花序曲</h4>
+                <p class="exhibit-desc">蓬鬆的微捲麻花辮，編入柔和的乾燥花與綠葉，宛如森林中的古老精靈。</p>
+                <span class="exhibit-region">台灣 (Taiwan)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="3">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/organic_2.png" alt="枯木春暉" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>枯木春暉</h4>
+                <p class="exhibit-desc">細緻的樹枝浮雕感髮冠，與柔軟的大波浪髮線形成剛柔並濟的和諧美感。</p>
+                <span class="exhibit-region">韓國 (Korea)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="3">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/organic_3.png" alt="麥田微風" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>麥田微風</h4>
+                <p class="exhibit-desc">層疊編織的公主頭戴上小巧的麥穗，透出暖洋洋的秋日鄉野氣息。</p>
+                <span class="exhibit-region">日本 (Japan)</span>
+              </div>
+            </div>
+
+            <!-- Room 4: Cybernetic Neon -->
+            <div class="exhibit-room-intro" data-theme="cyber">
+              <div class="room-intro-inner">
+                <span class="room-tag">ROOM IV</span>
+                <h3>賽博之光</h3>
+                <p class="room-en">Cybernetic Neon</p>
+                <div class="room-desc">
+                  未來主義與機械美學的碰撞。液態金屬絲線、冷光髮飾，
+                  帶您步入霓虹閃耀的賽博龐克之夜。
+                </div>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="4">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/cyber_1.png" alt="機械姬影" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>機械姬影</h4>
+                <p class="exhibit-desc">金屬質感的流銀長直髮配以鉻合金髮夾，冷豔的雙眸直擊未來。</p>
+                <span class="exhibit-region">韓國 (Korea)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="4">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/cyber_2.png" alt="深紫幻線" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>深紫幻線</h4>
+                <p class="exhibit-desc">極具賽博感的深紫與電光藍短髮，在虛擬發光線路下綻放未來之光。</p>
+                <span class="exhibit-region">日本 (Japan)</span>
+              </div>
+            </div>
+
+            <div class="exhibit-card hover-target" data-room="4">
+              <div class="exhibit-img-container">
+                <div class="museum-mat"></div>
+                <img src="/images/cyber_3.png" alt="霓虹織帶" loading="lazy" />
+                <div class="exhibit-card-overlay"></div>
+              </div>
+              <div class="exhibit-info">
+                <h4>霓虹織帶</h4>
+                <p class="exhibit-desc">金屬銅與電鍍銀髮絲交錯編織，在藍粉霓虹燈的折射下宛如機械雕刻。</p>
+                <span class="exhibit-region">台灣 (Taiwan)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: The Lookbook (207 幅 AI 裁切本地靈感庫) -->
+      <section id="lookbook" class="lookbook-section">
+        <div class="section-title-wrap text-center">
+          <span class="section-num">02</span>
+          <h2 class="section-title">THE LOOKBOOK</h2>
+          <p class="section-subtitle">207 幅 AI 裁剪生成靈感庫 (100% 本地原創，無外部 API)</p>
+        </div>
+
+        <!-- Lookbook Control Panel -->
+        <div class="lookbook-controls">
+          <!-- Category Filters -->
+          <div class="filter-group" id="lookbookFilters">
+            <button class="filter-btn active hover-target" type="button" data-category="all">所有靈感</button>
+            <button class="filter-btn hover-target" type="button" data-category="sculptural">前衛剪裁</button>
+            <button class="filter-btn hover-target" type="button" data-category="color">極光色彩</button>
+            <button class="filter-btn hover-target" type="button" data-category="braids">大地編髮</button>
+            <button class="filter-btn hover-target" type="button" data-category="wave">韓式微捲</button>
+            <button class="filter-btn hover-target" type="button" data-category="classic">經典造型</button>
+          </div>
+          
+          <div class="control-row">
+            <!-- Search Input -->
+            <div class="search-wrap">
+              <input type="text" id="lookbookSearch" placeholder="搜尋髮型、關鍵字或地區..." class="hover-target" />
+              <span class="search-underline"></span>
+            </div>
+            
+            <!-- Grid Layout Toggles (Premium UI Feature) -->
+            <div class="layout-toggles" id="layoutToggles">
+              <button class="layout-btn hover-target" type="button" data-cols="2" title="雜誌雙列 (Editorial)" aria-label="切換為雙列版面">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <rect x="3" y="3" width="7" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="14" y="3" width="7" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+              <button class="layout-btn hover-target" type="button" data-cols="3" title="三列展廳 (Gallery)" aria-label="切換為三列版面">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <rect x="2" y="3" width="5" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="9.5" y="3" width="5" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="17" y="3" width="5" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+              <button class="layout-btn active hover-target" type="button" data-cols="4" title="四列瀑布 (Masonry)" aria-label="切換為四列版面">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <rect x="2" y="3" width="4" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="7.5" y="3" width="4" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="13" y="3" width="4" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <rect x="18.5" y="3" width="4" height="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lookbook Grid (Masonry columns template) -->
+        <div class="lookbook-grid cols-4" id="lookbookGrid">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Load More Section -->
+        <div class="load-more-wrap">
+          <button class="load-more-btn hover-target" id="loadMoreBtn" type="button">
+            <span>加載更多靈感</span>
+            <span class="load-count" id="loadedCount">(16 / 207)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Section 4: Curatorial Vision (策展理念) -->
+      <section id="about" class="about-section">
+        <div class="about-grid">
+          <div class="about-text-panel">
+            <span class="section-num">03</span>
+            <h2 class="about-title">策展理念</h2>
+            <p class="about-subtitle">Curatorial Vision & Philosophy</p>
+            <div class="about-desc">
+              <p>
+                在 HautCoiffure，我們不相信簡單的「理髮」。髮絲是生命的延伸，是每個人隨身攜帶、
+                每天都在與空氣和光影互動的流動雕塑。
+              </p>
+              <p>
+                本展覽聚焦於<strong>東亞美學</strong>的面孔與輪廓，探索如何利用日式透明空氣編織、
+                韓式慵懶大捲、台式俐落幾何，在東方人柔和的五官上，交織出最動人的時尚符碼。
+                展廳與靈感庫所有展品全部由 AI 深入探索美學邊界而生，代表未來與時尚的交匯。
+              </p>
+              <p>
+                我們邀請您在音樂沙龍中慢下腳步，點擊任一幅髮型靈感，複製您喜愛的漸層配色 CSS，
+                或將其作為您下一次改變造型的靈感藍圖。
+              </p>
+            </div>
+            <div class="about-footer-logo">HAUTCOIFFURE</div>
+          </div>
+          
+          <div class="about-visual-panel">
+            <div class="about-img-box">
+              <img src="/images/sculptural_1.png" alt="Curatorial concept image" />
+              <div class="about-img-caption">
+                <h5>髮藝即是立體雕塑 / Hair as 3D Sculpture</h5>
+                <p>探索黑白對比與幾何剪裁在東亞輪廓的重塑作用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+
+    <!-- Floating Retro-Modern Vinyl Audio Lounge Player -->
+    <div class="audio-lounge-container" id="audioLounge">
+      <!-- Vinyl Player Interactive Visual Section -->
+      <div class="vinyl-player-section" id="vinylPlayerSection">
+        <div class="vinyl-disc-wrap">
+          <div class="vinyl-disc" id="vinylDisc">
+            <div class="vinyl-groove"></div>
+            <div class="vinyl-label">
+              <div class="vinyl-label-center"></div>
+            </div>
+          </div>
+        </div>
+        <div class="vinyl-tonearm-wrap">
+          <div class="vinyl-tonearm" id="vinylTonearm">
+            <div class="tonearm-base"></div>
+            <div class="tonearm-rod"></div>
+            <div class="tonearm-cartridge"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="audio-lounge-header hover-target" id="audioLoungeHeader">
+        <div class="audio-track-info">
+          <span class="track-title" id="currentTrackTitle">靜謐氛圍 (Lounge Cafe)</span>
+          <span class="track-status" id="currentTrackStatus">已暫停</span>
+        </div>
+        <button class="audio-expand-btn hover-target" id="audioExpandBtn" type="button" title="展開設定" aria-label="展開音樂設定">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="audio-lounge-body" id="audioLoungeBody">
+        <!-- Controls -->
+        <div class="audio-controls">
+          <button class="audio-control-btn hover-target" id="audioPrevBtn" type="button" title="上一首" aria-label="上一首">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6h2v12H6zm3.5 6L18 6v12z" fill="currentColor"/></svg>
+          </button>
+          <button class="audio-control-btn play-pause-btn hover-target" id="audioPlayPauseBtn" type="button" title="播放/暫停" aria-label="播放或暫停背景音樂">
+            <svg viewBox="0 0 24 24" width="24" height="24" id="playIcon"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" id="pauseIcon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
+          </button>
+          <button class="audio-control-btn hover-target" id="audioNextBtn" type="button" title="下一首" aria-label="下一首">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 18l8.5-6L6 6zm9-12h2v12h-2z" fill="currentColor"/></svg>
+          </button>
+        </div>
+
+        <!-- Volume Slider -->
+        <div class="audio-volume-wrap">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/></svg>
+          <input type="range" id="audioVolume" min="0" max="1" step="0.05" value="0.5" class="hover-target" />
+        </div>
+
+        <!-- Suno URL loader -->
+        <div class="suno-loader-section">
+          <label for="sunoUrlInput">加載您的 Suno 音樂直鏈 (MP3/Stream)</label>
+          <div class="suno-input-group">
+            <input type="text" id="sunoUrlInput" placeholder="https://cdn1.suno.ai/your-song.mp3 ..." class="hover-target" />
+            <button id="sunoLoadBtn" class="hover-target" type="button">載入</button>
+          </div>
+          <span class="suno-note">貼上 Suno 音訊網址或任意 MP3 直鏈即可於背景播放。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox Modal for Card Details -->
+    <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+      <div class="lightbox-overlay" id="lightboxOverlay"></div>
+      <div class="lightbox-content">
+        <button class="lightbox-close hover-target" id="lightboxClose" type="button" title="關閉" aria-label="關閉">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+        </button>
+        <div class="lightbox-grid">
+          <div class="lightbox-image-panel">
+            <img id="lightboxImg" src="/images/sculptural_1.png" alt="Zoomed hair design" decoding="async" />
+          </div>
+          <div class="lightbox-info-panel">
+            <span class="lightbox-category" id="lightboxCategory">CATEGORY</span>
+            <h3 class="lightbox-title" id="lightboxTitle">髮型名稱</h3>
+            <p class="lightbox-origin" id="lightboxOrigin">地區資訊</p>
+            <div class="lightbox-divider"></div>
+            <p class="lightbox-desc" id="lightboxDesc">美學描述與藝術解析...</p>
+            
+            <div class="lightbox-stats">
+              <span class="stat-item">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/></svg>
+                <span id="lightboxViews">342 瀏覽</span>
+              </span>
+            </div>
+
+            <!-- CSS Gradient Code Copy Feature -->
+            <div class="css-export-section">
+              <h5>複製此款情緒漸層色彩 CSS</h5>
+              <div class="css-code-box">
+                <code id="cssGradientCode">background: linear-gradient(135deg, #1f1f1f 0%, #0d0d0d 100%);</code>
+                <button id="copyCssBtn" class="hover-target" type="button" title="複製代碼">複製</button>
+              </div>
+            </div>
+            
+            <button class="lightbox-action-btn hover-target" id="lightboxCloseActionBtn" type="button">返回藝術展廳</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PWA install reminder -->
+    <div class="install-prompt" id="installPrompt" role="status" aria-live="polite">
+      <div class="install-card hover-target">
+        <img src="/icons/icon-192.png" width="48" height="48" alt="" aria-hidden="true" />
+        <div class="install-copy">
+          <span class="install-title">安裝 HautCoiffure</span>
+          <span class="install-subtitle">將沙龍藝術館加入桌面，快速回到靈感庫。</span>
+        </div>
+        <div class="install-actions">
+          <button id="installAppBtn" type="button" class="install-primary hover-target">安裝</button>
+          <button id="installDismissBtn" type="button" class="install-dismiss hover-target" aria-label="關閉安裝提醒">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.41L10.59 13.41 4.29 19.7 2.88 18.29 9.17 12 2.88 5.71 4.29 4.3l6.3 6.29 6.3-6.29z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification system -->
+    <div class="toast-notification" id="toastNotification">
+      <span class="toast-text" id="toastText">CSS 漸層代碼已成功複製！</span>
+    </div>
+
+    <!-- Main Module Script -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
