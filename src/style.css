@@ -928,6 +928,7 @@ h1, h2, h3, h4 {
 
 .lookbook-item-img-container {
   width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background-color: #050505;
   position: relative;
@@ -935,7 +936,8 @@ h1, h2, h3, h4 {
 
 .lookbook-item-img-container img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
   transition: transform var(--transition-slow), opacity 0.6s ease;
   opacity: 0;
