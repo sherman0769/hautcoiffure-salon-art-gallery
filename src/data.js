@@ -1,5 +1,7 @@
 // 207 張 100% 本地 AI 裁切生成的東亞時尚美髮圖庫資料庫 (HautCoiffure Local AI Lookbook Database)
 
+const LOOKBOOK_ASSET_VERSION = "crop-cleanup-20260625";
+
 const gridMappings = [
   { id: 1, category: "sculptural", baseName: "韓式極簡剪裁", origin: "韓國 (Korea)" },
   { id: 2, category: "sculptural", baseName: "日系前衛髮形", origin: "日本 (Japan)" },
@@ -59,7 +61,7 @@ const generateLookbookData = () => {
   gridMappings.forEach((grid) => {
     for (let subIndex = 1; subIndex <= 9; subIndex++) {
       const idx = cardCount;
-      const url = `/images/lookbook/g${grid.id}_${subIndex}.png`;
+      const url = `/images/lookbook/g${grid.id}_${subIndex}.png?v=${LOOKBOOK_ASSET_VERSION}`;
       
       // 組合不重疊的藝術化標題
       const adj = adjectives[(idx + subIndex) % adjectives.length];

@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .vercel
+.codex-remote-attachments/
 
 # Editor directories and files
 .vscode/*

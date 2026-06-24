@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hautcoiffure-v1';
+const CACHE_NAME = 'hautcoiffure-v2-crop-cleanup';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -47,7 +47,20 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname.startsWith('/images/') || url.pathname.startsWith('/icons/') || url.pathname.startsWith('/assets/')) {
+  if (url.pathname.startsWith('/images/')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  if (url.pathname.startsWith('/icons/') || url.pathname.startsWith('/assets/')) {
     event.respondWith(
       caches.match(request).then(cached => {
         if (cached) return cached;
