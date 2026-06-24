@@ -2,6 +2,8 @@
 
 沉浸式沙龍藝術 Web App，包含橫向藝術展廳、207 幅本地 AI 髮藝 Lookbook、背景音樂沙龍、PWA 安裝提醒、桌面圖標與分享預覽圖。
 
+Production: https://hautcoiffure-salon-art-gallery.vercel.app
+
 ## 開發
 
 ```bash
