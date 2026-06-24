@@ -9,6 +9,7 @@ let searchQuery = '';
 let currentPlaylistIndex = 0;
 let isPlaying = false;
 let userVolume = 0.5;
+let userSelectedLayout = false;
 
 // Web Audio API Synthesizer State (Procedural audio engine)
 let audioCtx = null;
@@ -17,11 +18,35 @@ let synthGainNode = null;
 let filterNode = null;
 let lfoNode = null;
 
-// Audio Playlist (Track 0 is procedurally synthesized locally, Track 1 & 2 are high-quality loops)
+// Audio Playlist: local Web Audio moods by default. External URLs stay opt-in only.
 const playlist = [
-  { title: "自定義合成氛圍 (Procedural Drone Synth)", url: "procedural" },
-  { title: "深夜漫步 (Lounge Cafe Track)", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { title: "極光迷霧 (Aura Synth Ambient)", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+  {
+    title: "HautCoiffure Ambient Atelier",
+    url: "procedural",
+    chordFreqs: [110.00, 164.81, 220.00, 277.18, 415.30],
+    filterFrequency: 220,
+    lfoFrequency: 0.055,
+    lfoDepth: 90,
+    gainScale: 0.32
+  },
+  {
+    title: "Velvet Gallery Drone",
+    url: "procedural",
+    chordFreqs: [98.00, 146.83, 196.00, 246.94, 369.99],
+    filterFrequency: 190,
+    lfoFrequency: 0.042,
+    lfoDepth: 70,
+    gainScale: 0.28
+  },
+  {
+    title: "Aurora Color Wash",
+    url: "procedural",
+    chordFreqs: [123.47, 185.00, 246.94, 311.13, 466.16],
+    filterFrequency: 260,
+    lfoFrequency: 0.068,
+    lfoDepth: 110,
+    gainScale: 0.26
+  }
 ];
 
 // Initialize Audio Element for MP3 streams
@@ -43,6 +68,9 @@ const customCursorDot = document.getElementById('customCursorDot');
 // Horizontal Scroll Elements
 const exScrollWrapper = document.getElementById('exhibitionScrollWrapper');
 const exTrack = document.getElementById('exhibitionTrack');
+const exhibitPrevBtn = document.getElementById('exhibitPrevBtn');
+const exhibitNextBtn = document.getElementById('exhibitNextBtn');
+const exhibitionProgressBar = document.getElementById('exhibitionProgressBar');
 
 // Lookbook Elements
 const lookbookGrid = document.getElementById('lookbookGrid');
@@ -137,6 +165,7 @@ window.addEventListener('load', () => {
   }, 1200);
   
   renderLookbook(true);
+  setLookbookLayout(getDefaultLayoutCols(), false);
   registerServiceWorker();
   scheduleInstallPrompt();
 });
@@ -269,6 +298,43 @@ exScrollWrapper.addEventListener('wheel', (e) => {
     exScrollWrapper.scrollLeft += e.deltaY * 1.5;
   }
 });
+
+function getExhibitionStep() {
+  return Math.min(window.innerWidth * 0.86, 460);
+}
+
+function updateExhibitionProgress() {
+  const maxScroll = exScrollWrapper.scrollWidth - exScrollWrapper.clientWidth;
+  const progress = maxScroll > 0 ? exScrollWrapper.scrollLeft / maxScroll : 0;
+  exhibitionProgressBar.style.width = `${Math.max(6, progress * 100)}%`;
+  exhibitPrevBtn.disabled = progress <= 0.01;
+  exhibitNextBtn.disabled = progress >= 0.99;
+}
+
+function scrollExhibition(direction) {
+  exScrollWrapper.scrollBy({
+    left: getExhibitionStep() * direction,
+    behavior: 'smooth'
+  });
+}
+
+exhibitPrevBtn.addEventListener('click', () => scrollExhibition(-1));
+exhibitNextBtn.addEventListener('click', () => scrollExhibition(1));
+
+exScrollWrapper.addEventListener('scroll', updateExhibitionProgress, { passive: true });
+window.addEventListener('resize', updateExhibitionProgress);
+exScrollWrapper.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft') {
+    event.preventDefault();
+    scrollExhibition(-1);
+  }
+  if (event.key === 'ArrowRight') {
+    event.preventDefault();
+    scrollExhibition(1);
+  }
+});
+
+requestAnimationFrame(updateExhibitionProgress);
 
 // Drag to scroll
 let isDown = false;
@@ -544,17 +610,40 @@ loadMoreBtn.addEventListener('click', () => {
 /* ==========================================================================
    6. Layout View Switcher (Dynamic Columns)
    ========================================================================== */
+function setLookbookLayout(cols, announce = false) {
+  layoutToggles.querySelectorAll('.layout-btn').forEach(button => {
+    const isActive = button.getAttribute('data-cols') === cols;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+
+  lookbookGrid.className = `lookbook-grid cols-${cols}`;
+
+  if (announce) {
+    const label = layoutToggles.querySelector(`.layout-btn[data-cols="${cols}"] span`)?.textContent || '版面';
+    showToast(`已切換為${label}模式`, 1600);
+  }
+
+  updateCursorHoverBindings();
+}
+
+function getDefaultLayoutCols() {
+  return window.matchMedia('(max-width: 760px)').matches ? '2' : '4';
+}
+
 layoutToggles.addEventListener('click', (e) => {
   const btn = e.target.closest('.layout-btn');
   if (!btn) return;
 
-  layoutToggles.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
   const cols = btn.getAttribute('data-cols');
-  lookbookGrid.className = `lookbook-grid cols-${cols}`;
-  
-  updateCursorHoverBindings();
+  userSelectedLayout = true;
+  setLookbookLayout(cols, true);
+});
+
+window.addEventListener('resize', () => {
+  if (!userSelectedLayout) {
+    setLookbookLayout(getDefaultLayoutCols(), false);
+  }
 });
 
 /* ==========================================================================
@@ -714,6 +803,7 @@ function initAudioContext() {
 
 function startProceduralSynth() {
   initAudioContext();
+  const track = playlist[currentPlaylistIndex] || playlist[0];
   
   // Master Gain control
   synthGainNode = audioCtx.createGain();
@@ -722,23 +812,23 @@ function startProceduralSynth() {
   // Cutoff Filter
   filterNode = audioCtx.createBiquadFilter();
   filterNode.type = 'lowpass';
-  filterNode.frequency.setValueAtTime(220, audioCtx.currentTime);
+  filterNode.frequency.setValueAtTime(track.filterFrequency || 220, audioCtx.currentTime);
   filterNode.Q.setValueAtTime(4, audioCtx.currentTime);
   
   // LFO sweep cutoff (creates slow sea-wave like filter sweeps)
   lfoNode = audioCtx.createOscillator();
   lfoNode.type = 'sine';
-  lfoNode.frequency.setValueAtTime(0.06, audioCtx.currentTime); // 16s cycle
+  lfoNode.frequency.setValueAtTime(track.lfoFrequency || 0.06, audioCtx.currentTime);
   
   const lfoGain = audioCtx.createGain();
-  lfoGain.gain.setValueAtTime(90, audioCtx.currentTime);
+  lfoGain.gain.setValueAtTime(track.lfoDepth || 90, audioCtx.currentTime);
   
   lfoNode.connect(lfoGain);
   lfoGain.connect(filterNode.frequency);
   lfoNode.start();
   
-  // Soft Chord Harmony detuned oscillators (A Major 9 chord: A2, E3, A3, C#4, G#4)
-  const chordFreqs = [110.00, 164.81, 220.00, 277.18, 415.30];
+  // Soft chord harmony detuned oscillators.
+  const chordFreqs = track.chordFreqs || [110.00, 164.81, 220.00, 277.18, 415.30];
   chordFreqs.forEach((freq, index) => {
     const osc = audioCtx.createOscillator();
     osc.type = index % 2 === 0 ? 'triangle' : 'sine';
@@ -761,28 +851,38 @@ function startProceduralSynth() {
   synthGainNode.connect(audioCtx.destination);
   
   // Fade in synth volume smoothly over 1.2s to prevent click pop
-  synthGainNode.gain.linearRampToValueAtTime(userVolume * 0.35, audioCtx.currentTime + 1.2);
+  synthGainNode.gain.linearRampToValueAtTime(userVolume * (track.gainScale || 0.32), audioCtx.currentTime + 1.2);
 }
 
 function stopProceduralSynth() {
   if (synthGainNode && audioCtx) {
+    const gainToStop = synthGainNode;
+    const oscillatorsToStop = [...synthOscillators];
+    const lfoToStop = lfoNode;
+
+    synthOscillators = [];
+    synthGainNode = null;
+    filterNode = null;
+    lfoNode = null;
+
     // Fade out volume over 0.7s
-    synthGainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.7);
+    gainToStop.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainToStop.gain.setValueAtTime(gainToStop.gain.value, audioCtx.currentTime);
+    gainToStop.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.7);
     
     setTimeout(() => {
       // Disconnect and stop voices
-      synthOscillators.forEach(osc => {
+      oscillatorsToStop.forEach(osc => {
         try { osc.stop(); } catch(e) {}
+        try { osc.disconnect(); } catch(e) {}
       });
-      synthOscillators = [];
       
-      if (lfoNode) {
-        try { lfoNode.stop(); } catch(e) {}
-        lfoNode = null;
+      if (lfoToStop) {
+        try { lfoToStop.stop(); } catch(e) {}
+        try { lfoToStop.disconnect(); } catch(e) {}
       }
-      
-      synthGainNode = null;
-      filterNode = null;
+
+      try { gainToStop.disconnect(); } catch(e) {}
     }, 800);
   }
 }
@@ -798,9 +898,18 @@ audioExpandBtn.addEventListener('click', () => {
   audioLounge.classList.toggle('expanded');
 });
 
+function setAudioVisualState(playing) {
+  audioLounge.classList.toggle('playing', playing);
+  headerMusicToggle.classList.toggle('playing', playing);
+  headerMusicToggle.setAttribute('aria-pressed', String(playing));
+  audioPlayPauseBtn.setAttribute('aria-pressed', String(playing));
+  playIcon.style.display = playing ? 'none' : 'block';
+  pauseIcon.style.display = playing ? 'block' : 'none';
+}
+
 function updateTrackUI() {
   currentTrackTitle.textContent = playlist[currentPlaylistIndex].title;
-  currentTrackStatus.textContent = isPlaying ? "正在播放" : "已暫停";
+  currentTrackStatus.textContent = isPlaying ? "全站播放中" : "點擊播放全局背景音樂";
 }
 
 function fadeAudio(targetVolume, onComplete) {
@@ -843,19 +952,13 @@ function togglePlayPause() {
     if (isProcedural) {
       stopProceduralSynth();
       isPlaying = false;
-      audioLounge.classList.remove('playing');
-      headerMusicToggle.classList.remove('playing');
-      playIcon.style.display = 'block';
-      pauseIcon.style.display = 'none';
+      setAudioVisualState(false);
       updateTrackUI();
     } else {
       fadeAudio(0, () => {
         audio.pause();
         isPlaying = false;
-        audioLounge.classList.remove('playing');
-        headerMusicToggle.classList.remove('playing');
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
+        setAudioVisualState(false);
         updateTrackUI();
       });
     }
@@ -866,23 +969,18 @@ function togglePlayPause() {
       try {
         startProceduralSynth();
         isPlaying = true;
-        audioLounge.classList.add('playing');
-        headerMusicToggle.classList.add('playing');
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
+        setAudioVisualState(true);
         updateTrackUI();
       } catch (err) {
         console.error("Synthesizer audio block:", err);
+        showToast('背景音樂啟動失敗，請再點一次播放。', 2600);
       }
     } else {
       audio.src = playlist[currentPlaylistIndex].url;
       audio.volume = 0;
       audio.play().then(() => {
         isPlaying = true;
-        audioLounge.classList.add('playing');
-        headerMusicToggle.classList.add('playing');
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
+        setAudioVisualState(true);
         updateTrackUI();
         fadeAudio(userVolume);
       }).catch(err => {
@@ -891,10 +989,7 @@ function togglePlayPause() {
         currentPlaylistIndex = 0;
         startProceduralSynth();
         isPlaying = true;
-        audioLounge.classList.add('playing');
-        headerMusicToggle.classList.add('playing');
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
+        setAudioVisualState(true);
         updateTrackUI();
       });
     }
@@ -909,7 +1004,8 @@ audioVolume.addEventListener('input', (e) => {
   if (isPlaying) {
     const isProcedural = playlist[currentPlaylistIndex].url === 'procedural';
     if (isProcedural && synthGainNode) {
-      synthGainNode.gain.setValueAtTime(userVolume * 0.35, audioCtx.currentTime);
+      const track = playlist[currentPlaylistIndex] || playlist[0];
+      synthGainNode.gain.setValueAtTime(userVolume * (track.gainScale || 0.32), audioCtx.currentTime);
     } else {
       audio.volume = userVolume;
     }
@@ -930,21 +1026,21 @@ function changeTrack(direction) {
       if (isNextProcedural) {
         startProceduralSynth();
         isPlaying = true;
-        audioLounge.classList.add('playing');
+        setAudioVisualState(true);
         updateTrackUI();
       } else {
         audio.src = playlist[currentPlaylistIndex].url;
         audio.volume = 0;
         audio.play().then(() => {
           isPlaying = true;
-          audioLounge.classList.add('playing');
+          setAudioVisualState(true);
           fadeAudio(userVolume);
         }).catch(err => {
           console.error("Playback block. Falling back to synth.", err);
           currentPlaylistIndex = 0;
           startProceduralSynth();
           isPlaying = true;
-          audioLounge.classList.add('playing');
+          setAudioVisualState(true);
           updateTrackUI();
         });
       }
@@ -971,7 +1067,7 @@ function changeTrack(direction) {
 audioPrevBtn.addEventListener('click', () => changeTrack(-1));
 audioNextBtn.addEventListener('click', () => changeTrack(1));
 
-// Custom MP3 / Suno Stream Loader
+// Custom MP3 / external stream loader
 sunoLoadBtn.addEventListener('click', () => {
   const url = sunoUrlInput.value.trim();
   if (url === '') return;
@@ -980,7 +1076,7 @@ sunoLoadBtn.addEventListener('click', () => {
   
   const performLoad = () => {
     const customSong = {
-      title: "自訂 Suno 音訊 / 外部流媒體",
+      title: "自訂外部音源",
       url: url
     };
     
@@ -997,10 +1093,7 @@ sunoLoadBtn.addEventListener('click', () => {
     
     audio.play().then(() => {
       isPlaying = true;
-      audioLounge.classList.add('playing');
-      headerMusicToggle.classList.add('playing');
-      playIcon.style.display = 'none';
-      pauseIcon.style.display = 'block';
+      setAudioVisualState(true);
       fadeAudio(userVolume);
       
       showToast("自訂音訊載入成功並開始播放！");
@@ -1012,10 +1105,7 @@ sunoLoadBtn.addEventListener('click', () => {
       currentPlaylistIndex = 0;
       startProceduralSynth();
       isPlaying = true;
-      audioLounge.classList.add('playing');
-      headerMusicToggle.classList.add('playing');
-      playIcon.style.display = 'none';
-      pauseIcon.style.display = 'block';
+      setAudioVisualState(true);
       updateTrackUI();
       
       showToast("直鏈加載失敗，切回程序合成器播放！");
@@ -1041,3 +1131,6 @@ sunoLoadBtn.addEventListener('click', () => {
 audio.addEventListener('ended', () => {
   changeTrack(1);
 });
+
+setAudioVisualState(false);
+updateTrackUI();
