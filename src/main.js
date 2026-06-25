@@ -18,34 +18,19 @@ let synthGainNode = null;
 let filterNode = null;
 let lfoNode = null;
 
-// Audio Playlist: local Web Audio moods by default. External URLs stay opt-in only.
+// Audio Playlist: local MP3 loops by default. Web Audio synth stays as fallback.
 const playlist = [
   {
-    title: "HautCoiffure Ambient Atelier",
-    url: "procedural",
-    chordFreqs: [110.00, 164.81, 220.00, 277.18, 415.30],
-    filterFrequency: 220,
-    lfoFrequency: 0.055,
-    lfoDepth: 90,
-    gainScale: 0.32
+    title: "Atelier Ambient",
+    url: "/audio/atelier-ambient.mp3"
   },
   {
-    title: "Velvet Gallery Drone",
-    url: "procedural",
-    chordFreqs: [98.00, 146.83, 196.00, 246.94, 369.99],
-    filterFrequency: 190,
-    lfoFrequency: 0.042,
-    lfoDepth: 70,
-    gainScale: 0.28
+    title: "Velvet Gallery",
+    url: "/audio/velvet-gallery.mp3"
   },
   {
     title: "Aurora Color Wash",
-    url: "procedural",
-    chordFreqs: [123.47, 185.00, 246.94, 311.13, 466.16],
-    filterFrequency: 260,
-    lfoFrequency: 0.068,
-    lfoDepth: 110,
-    gainScale: 0.26
+    url: "/audio/aurora-color-wash.mp3"
   }
 ];
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hautcoiffure-v2-crop-cleanup';
+const CACHE_NAME = 'hautcoiffure-v3-local-audio';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -47,7 +47,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname.startsWith('/images/')) {
+  if (url.pathname.startsWith('/images/') || url.pathname.startsWith('/audio/')) {
     event.respondWith(
       fetch(request)
         .then(response => {
