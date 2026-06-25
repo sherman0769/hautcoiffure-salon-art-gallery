@@ -1229,6 +1229,34 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
+.site-credit {
+  width: fit-content;
+  margin-top: 2.7rem;
+  padding: 0.95rem 1.15rem;
+  border-left: 2px solid var(--color-gold);
+  background: rgba(212, 175, 55, 0.045);
+  box-shadow: inset 0 0 18px rgba(212, 175, 55, 0.025);
+}
+
+.site-credit span,
+.site-credit small {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.site-credit strong {
+  display: block;
+  margin: 0.34rem 0 0.26rem;
+  color: var(--color-gold);
+  font-family: 'Cinzel', 'Noto Serif TC', serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.28em;
+  font-weight: 700;
+}
+
 .about-footer-logo {
   font-family: 'Cinzel', serif;
   font-size: 1.3rem;
@@ -2452,6 +2480,16 @@ p, h1, h2, h3, h4, h5, span, a, button {
     font-size: 0.92rem;
     line-height: 1.82;
     letter-spacing: 0.03em;
+  }
+
+  .site-credit {
+    width: 100%;
+    margin-top: 2.2rem;
+  }
+
+  .site-credit strong {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
   }
 
   .about-footer-logo {

@@ -747,7 +747,7 @@ copyCssBtn.addEventListener('click', () => {
 headerShareBtn.addEventListener('click', async () => {
   const shareData = {
     title: document.title,
-    text: 'HautCoiffure 高奢髮藝展館：瀏覽 200+ 款沙龍藝術靈感。',
+    text: 'HautCoiffure 高奢髮藝展館：李詩民設計製作的沉浸式沙龍藝術網站。',
     url: window.location.href
   };
 
